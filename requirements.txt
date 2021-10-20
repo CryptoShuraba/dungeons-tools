@@ -1,0 +1,5 @@
+flask
+deta
+flask-cors
+requests
+web3
