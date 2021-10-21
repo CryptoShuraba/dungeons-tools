@@ -1,3 +1,4 @@
+from logging import currentframe
 from web3 import Web3
 from deta import Deta
 import os 
@@ -26,8 +27,11 @@ def app(event):
         profession = monsterContract.functions.profession(suffix).call()
         monster = monsterContract.functions.monster(i+1).call()
 
-        if copperCoins > 0:
-            print(i+1, copperCoins/1e18)
+        
+        item = monsterCoppers.get(str(i+1))
+        lastCopperCount = 0 if not item else item['count']
+        if copperCoins > 0 and copperCoins/1e18 != lastCopperCount:
+            print(i+1, lastCopperCount, copperCoins/1e18)
             monsterCoppers.put({
                 "tokenID": i+1,
                 "count": copperCoins/1e18,
