@@ -1,4 +1,3 @@
-from logging import currentframe
 from web3 import Web3
 from deta import Deta
 import os 
