@@ -3,7 +3,7 @@ from deta import Deta
 import os 
 
 
-def app(event):
+def app():
     w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
 
     monsterContract = w3.eth.contract(
@@ -26,7 +26,6 @@ def app(event):
         profession = monsterContract.functions.profession(suffix).call()
         monster = monsterContract.functions.monster(i+1).call()
 
-        
         item = monsterCoppers.get(str(i+1))
         lastCopperCount = 0 if not item else item['count']
         if copperCoins > 0 and copperCoins/1e18 != lastCopperCount:
@@ -39,3 +38,7 @@ def app(event):
                 "key": str(i+1)
             })
     return 'ok'
+
+
+if __name__ == '__main__':
+    app()

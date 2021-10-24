@@ -35,7 +35,7 @@ def put_data(tokenid, copperCoins, winCount, playCount, summonerCoppers):
             "key": str(tokenid)
         })
 
-def app(event):
+def app():
     w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
 
     global monkFirstAdventure
@@ -92,3 +92,6 @@ def app(event):
     print("End Block: {}".format(newBlockNumeber))
     track.put(newBlockNumeber, 'aa38-last-block')
     return 'ok'
+
+if __name__ == '__main__':
+    app()
