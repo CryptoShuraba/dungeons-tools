@@ -1,3 +1,0 @@
-flask
-deta
-flask-cors

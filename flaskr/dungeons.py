@@ -1,13 +1,14 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
 from deta import Deta
-import json
 import os
 
-app = Flask(__name__)
-CORS(app)
+from flask import (
+    Blueprint, jsonify
+)
 
-@app.route('/monster_coppers', methods=["GET"])
+bp = Blueprint('dungeons', __name__, url_prefix='/dungeons')
+
+
+@bp.route('/monster_coppers', methods=["GET"])
 def monster_coppers():
     deta = Deta(os.getenv('DETA_SECRET'))
     monsterCoppers = deta.Base("monster_coppers")
@@ -17,7 +18,7 @@ def monster_coppers():
     
     return jsonify(res[0:30])
 
-@app.route('/summoner_coppers', methods=["GET"])
+@bp.route('/summoner_coppers', methods=["GET"])
 def summoner_coppers():
     deta = Deta(os.getenv('DETA_SECRET'))
     db = deta.Base("summoner_coppers")
@@ -27,7 +28,7 @@ def summoner_coppers():
     
     return jsonify(res[0:30])
 
-@app.route('/summoner_play_count', methods=["GET"])
+@bp.route('/summoner_play_count', methods=["GET"])
 def summoner_play_count():
     deta = Deta(os.getenv('DETA_SECRET'))
     db = deta.Base("summoner_coppers")

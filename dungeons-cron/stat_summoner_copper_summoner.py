@@ -2,7 +2,6 @@ from web3 import Web3
 import traceback
 import requests
 import json
-from web3.logs import STRICT, IGNORE, DISCARD, WARN
 import os
 
 monkFirstAdventure = None
