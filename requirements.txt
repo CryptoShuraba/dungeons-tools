@@ -3,3 +3,4 @@ deta
 flask-cors
 requests
 web3
+gunicorn

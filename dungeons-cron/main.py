@@ -80,7 +80,7 @@ def app():
                         # Count wins and plays
                         winsCount, playCount = count_wins(summonerTokenID)
                         # add to table
-                        print(summonerTokenID, copperCoins, winsCount, playCount)
+                        print(r['blockNumber'], summonerTokenID, copperCoins, winsCount, playCount)
                         put_data(summonerTokenID, copperCoins, winsCount, playCount, summonerCoppers)
                         summoner.append(summonerTokenID)
                     newBlockNumeber = r['blockNumber']
