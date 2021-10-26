@@ -1,3 +1,0 @@
-deta
-requests
-web3

@@ -4,3 +4,6 @@ flask-cors
 requests
 web3
 gunicorn
+Flask-Migrate
+Flask-SQLAlchemy
+psycopg2-binary
