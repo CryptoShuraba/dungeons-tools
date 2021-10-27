@@ -8,6 +8,8 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app(test_config=None):
+    from .models import DungeonsFirstAdventure, DungeonsSummonerStat
+
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
