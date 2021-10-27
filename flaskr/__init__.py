@@ -3,12 +3,21 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_apscheduler import APScheduler
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
+scheduler = APScheduler()
 
 def create_app(test_config=None):
     from .models import DungeonsFirstAdventure, DungeonsSummonerStat
+
+    def is_debug_mode():
+        """Get app debug status."""
+        debug = os.environ.get("FLASK_DEBUG")
+        if not debug:
+            return os.environ.get("FLASK_ENV") == "development"
+        return debug.lower() not in ("0", "false", "no")
 
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -23,8 +32,13 @@ def create_app(test_config=None):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    scheduler.init_app(app)
 
-    from . import dungeons
-    app.register_blueprint(dungeons.bp)
+    with app.app_context():
+        from . import jobs
+        scheduler.start()
+
+        from . import dungeons
+        app.register_blueprint(dungeons.bp)
 
     return app

@@ -7,8 +7,8 @@ class DungeonsFirstAdventure(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     txhash = db.Column(db.String(200), unique=True)
     blocknum = db.Column(db.String(200))
-    summoner_tokenid = db.Column(db.String(200))
-    monster_tokenid = db.Column(db.String(200))
+    summoner_tokenid = db.Column(db.BigInteger)
+    monster_tokenid = db.Column(db.BigInteger)
     summoner_class = db.Column(db.Integer)
     copper_coins = db.Column(db.Integer)
     is_summoner_win = db.Column(db.String(1))
@@ -46,7 +46,7 @@ class DungeonsSummonerStat(db.Model):
     __tablename__ = 'dungeons_summoner_stat'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    summoner_tokenid = db.Column(db.String(200), unique=True)
+    summoner_tokenid = db.Column(db.BigInteger, unique=True)
     summoner_class = db.Column(db.Integer)
     copper_coins = db.Column(db.Integer)
     wins_count = db.Column(db.Integer)
