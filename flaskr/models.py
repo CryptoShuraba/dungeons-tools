@@ -75,3 +75,23 @@ class DungeonsSummonerStat(db.Model):
             'wins_count': self.wins_count,
             'plays_count': self.plays_count,
         }
+
+
+class DungeonsTrack(db.Model):
+    __tablename__ = 'dungeons_track'
+
+    id = db.Column(db.BigInteger, primary_key=True)
+    key = db.Column(db.String(50), unique=True)
+    value = db.Column(db.String(200), default='0')
+    created = db.Column(db.DateTime)
+    updated = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+    
+    def serialize(self):
+        return {
+            'id': self.id, 
+            'key': self.key,
+            'value': self.value
+        }

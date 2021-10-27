@@ -3,6 +3,10 @@ import traceback
 import requests
 import json
 import os
+from datetime import datetime
+
+from flaskr import models, db
+
 
 monkFirstAdventure = None
 
@@ -23,19 +27,43 @@ def count_wins(tokenid):
 
 def get_result(tokenid, num):
     obj = monkFirstAdventure.functions.result(tokenid, num)
-    return obj.monster, obj.copper
+    isWin = '1' if obj.copper else '0'
+    return obj.monster, obj.copper, isWin
 
-def put_data(tokenid, copperCoins, winCount, playCount, summonerCoppers):
-    item = summonerCoppers.get(str(tokenid))
-    if not item or item['play_count'] != playCount:
-        summonerCoppers.put({
-            "tokenID": tokenid,
-            "copper_count": copperCoins,
-            "class": 'Monk',
-            "play_count": playCount,
-            "wins_count": winCount,
-            "key": str(tokenid)
-        })
+def put_summoner_stat(tokenid, copperCoins, winCount, playCount):
+    obj = models.DungeonsSummonerStat.query.filter_by(summoner_tokenid=tokenid).first()
+    if not obj:
+        obj = models.DungeonsSummonerStat(tokenid, 6, copperCoins, winCount, playCount, datetime.now(), datetime.now())
+        db.session.add(obj)
+    elif obj.plays_count != playCount:
+        obj.copper_coins = copperCoins
+        obj.wins_count = winCount
+        obj.plays_count = playCount
+        obj.updated = datetime.now()
+    else:
+        return 
+    db.session.commit()
+
+def get_track_blocknum():
+    obj = models.DungeonsTrack.query.filter_by(key='aa38-last-block').first()
+    if not obj:
+        obj = models.DungeonsTrack(key='aa38-last-block', value='0', created=datetime.now(), updated=datetime.now())
+        db.session.add(obj)
+        db.session.commit()
+        return '0'
+    return obj.value
+
+def put_track_blocknum(blocknum):
+    obj = models.DungeonsTrack.query.filter_by(key='aa38-last-block').first()
+    obj.value = blocknum
+    db.session.commit()
+
+def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win):
+    obj = models.DungeonsFirstAdventure.query.filter_by(txhash=txhash).first()
+    if not obj:
+        obj = models.DungeonsFirstAdventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win, datetime.now(), datetime.now())
+        db.session.add(obj)
+        db.session.commit()
 
 def app():
     w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
@@ -52,14 +80,9 @@ def app():
         abi='[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"subject","type":"string"},{"indexed":true,"internalType":"uint256","name":"from","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"to","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"symbol","type":"string"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"},{"indexed":false,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"arg","type":"bool"}],"name":"Whitelist","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"balanceOfMonster","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"balanceOfSummoner","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isApproved","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_monster","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"mint_to_monster","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_summnoer","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"mint_to_summoner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupplyOfMonster","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"totalSupplyOfOperator","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"totalSupplyOfOperatorOfMonster","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"totalSupplyOfOperatorOfSummoner","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupplyOfSummoner","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_from","type":"uint256"},{"internalType":"uint256","name":"_to","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"transfer_to_monster","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_from","type":"uint256"},{"internalType":"uint256","name":"_to","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"transfer_to_summoner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"whitelist","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
     )
 
-    deta = Deta(os.getenv('DETA_SECRET'))
-    summonerCoppers = deta.Base("summoner_coppers")
-    track = deta.Base("track")
-
     method = '0xb00b52f1'
-    summoner = []
-    blockNumber = track.get('aa38-last-block')
-    blockNumber = '0' if not blockNumber else blockNumber['value']
+
+    blockNumber = get_track_blocknum()
     print("Start Block: {}".format(blockNumber))
     newBlockNumeber = blockNumber
 
@@ -77,22 +100,24 @@ def app():
                     txinput = r['input'][10:]
                     summonerTokenID = int(txinput, 16)
                     # Count the copper coins obtained
-                    if summonerTokenID not in summoner:
-                        copperCoins = count_copper(summonerTokenID)
-                        # Count wins and plays
-                        winsCount, playCount = count_wins(summonerTokenID)
-                        # add to table
-                        print(r['blockNumber'], summonerTokenID, copperCoins, winsCount, playCount)
-                        put_data(summonerTokenID, copperCoins, winsCount, playCount, summonerCoppers)
-                        summoner.append(summonerTokenID)
+                    copperCoins = count_copper(summonerTokenID)
+                    # Count wins and plays
+                    winsCount, playCount = count_wins(summonerTokenID)
+                    # add to table
+                    print(r['blockNumber'], summonerTokenID, copperCoins, winsCount, playCount)
+                    put_summoner_stat(summonerTokenID, copperCoins, winsCount, playCount)
+
+                    monsterTokenID, copper, isWin =  get_result(summonerTokenID, playCount)
+                    insert_adventure(r['txhash'], r['blockNumber'], summonerTokenID, monsterTokenID, 6, copper, isWin)
+
                     newBlockNumeber = r['blockNumber']
         except:
-            track.put(newBlockNumeber, 'aa38-last-block')
+            put_track_blocknum(newBlockNumeber)
             traceback.print_exc()
             break
 
     print("End Block: {}".format(newBlockNumeber))
-    track.put(newBlockNumeber, 'aa38-last-block')
+    put_track_blocknum(newBlockNumeber)
     return 'ok'
 
 if __name__ == '__main__':
