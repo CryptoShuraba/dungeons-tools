@@ -67,7 +67,7 @@ def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summon
         db.session.add(obj)
         db.session.commit()
 
-# @scheduler.task('date', id='do_job_1')
+@scheduler.task('interval', id='do_job_1', hours=1)
 def stat_summoner_adventure():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
