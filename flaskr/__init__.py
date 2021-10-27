@@ -4,6 +4,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
+
 
 db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
@@ -40,5 +42,6 @@ def create_app(test_config=None):
 
         from . import dungeons
         app.register_blueprint(dungeons.bp)
-
+    
+    CORS(app)
     return app

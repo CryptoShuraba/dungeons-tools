@@ -57,6 +57,7 @@ def get_track_blocknum():
 def put_track_blocknum(blocknum):
     obj = models.DungeonsTrack.query.filter_by(key='aa38-last-block').first()
     obj.value = blocknum
+    obj.updated = datetime.now()
     db.session.commit()
 
 def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win):
@@ -66,7 +67,7 @@ def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summon
         db.session.add(obj)
         db.session.commit()
 
-@scheduler.task('date', id='do_job_1')
+# @scheduler.task('date', id='do_job_1')
 def stat_summoner_adventure():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))

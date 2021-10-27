@@ -29,6 +29,7 @@ class DungeonsFirstAdventure(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.id)
     
+    @property
     def serialize(self):
         return {
             'id': self.id, 
@@ -66,6 +67,7 @@ class DungeonsSummonerStat(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.id)
     
+    @property
     def serialize(self):
         return {
             'id': self.id, 
