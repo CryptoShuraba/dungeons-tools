@@ -7,4 +7,3 @@ gunicorn
 Flask-Migrate
 Flask-SQLAlchemy
 psycopg2-binary
-flask_script

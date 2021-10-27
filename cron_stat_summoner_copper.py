@@ -66,6 +66,7 @@ def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summon
         db.session.commit()
 
 def app():
+    import pdb;pdb.set_trace
     w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
 
     global monkFirstAdventure
