@@ -91,9 +91,39 @@ class DungeonsTrack(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.id)
     
+    @property
     def serialize(self):
         return {
             'id': self.id, 
             'key': self.key,
             'value': self.value
+        }
+
+
+class DungeonsMonsterCoppers(db.Model):
+    __tablename__ = 'dungeons_monster_coppers'
+
+    id = db.Column(db.BigInteger, primary_key=True)
+    monster_tokenid = db.Column(db.BigInteger, unique=True)
+    monster = db.Column(db.String(50), default='')
+    prefix = db.Column(db.String(50), default='')
+    suffix = db.Column(db.String(50), default='')
+    copper_coins = db.Column(db.BigInteger)
+    profession = db.Column(db.String(50), default='')
+    created = db.Column(db.DateTime)
+    updated = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+    
+    @property
+    def serialize(self):
+        return {
+            'id': self.id, 
+            'monster_tokenid': self.monster_tokenid,
+            'monster': self.monster,
+            'prefix': self.prefix,
+            'suffix': self.suffix,
+            'copper_coins': self.copper_coins,
+            'profession': self.profession
         }
