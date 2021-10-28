@@ -107,7 +107,7 @@ class DungeonsMonsterCoppers(db.Model):
     monster_tokenid = db.Column(db.BigInteger, unique=True)
     monster = db.Column(db.String(50), default='')
     prefix = db.Column(db.String(50), default='')
-    suffix = db.Column(db.String(50), default='')
+    suffix = db.Column(db.Integer)
     copper_coins = db.Column(db.BigInteger)
     profession = db.Column(db.String(50), default='')
     created = db.Column(db.DateTime)

@@ -79,7 +79,7 @@ def put_monster_coppers(monsterTokenid):
     if not obj:
         obj = models.DungeonsMonsterCoppers(
             monster_tokenid=monsterTokenid, monster=monster, 
-            prefix=prefix, suffix=suffix, copper_coins=copperCoins,
+            prefix=prefix, suffix=suffix, copper_coins=copperCoins/1e18,
             profession=profession, created=datetime.now(), updated=datetime.now())
         db.session.add(obj)
     elif copperCoins/1e18 != obj.copper_coins:
