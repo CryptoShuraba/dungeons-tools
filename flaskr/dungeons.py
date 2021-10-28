@@ -38,6 +38,6 @@ def adventure_history():
     page_size = request.args.get('page_size', 20)
     page = request.args.get('page', 0)
 
-    items = DungeonsFirstAdventure.query.order_by(DungeonsFirstAdventure.id).offset(int(page)*int(page_size)).limit(int(page_size)).all()
+    items = DungeonsFirstAdventure.query.order_by(DungeonsFirstAdventure.id.desc()).offset(int(page)*int(page_size)).limit(int(page_size)).all()
     
     return jsonify([i.serialize for i in items])
