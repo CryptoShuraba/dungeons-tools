@@ -1,25 +1,19 @@
-from deta import Deta
-import os
 from flask import request
 
 from flask import (
     Blueprint, jsonify
 )
 
-from .models import DungeonsSummonerStat, DungeonsFirstAdventure
+from .models import DungeonsSummonerStat, DungeonsFirstAdventure, DungeonsMonsterCoppers
 
 bp = Blueprint('dungeons', __name__, url_prefix='/dungeons')
 
 
 @bp.route('/monster_coppers', methods=["GET"])
 def monster_coppers():
-    deta = Deta(os.getenv('DETA_SECRET'))
-    monsterCoppers = deta.Base("monster_coppers")
-
-    res = monsterCoppers.fetch().items
-    res.sort(key=lambda x: x['count'], reverse=True)
+    items = DungeonsMonsterCoppers.query.order_by(DungeonsMonsterCoppers.copper_coins.desc()).limit(30).all()
     
-    return jsonify(res[0:30])
+    return jsonify([i.serialize for i in items])
 
 @bp.route('/summoner_coppers', methods=["GET"])
 def summoner_coppers():
@@ -38,6 +32,9 @@ def adventure_history():
     page_size = request.args.get('page_size', 20)
     page = request.args.get('page', 0)
 
-    items = DungeonsFirstAdventure.query.order_by(DungeonsFirstAdventure.id.desc()).offset(int(page)*int(page_size)).limit(int(page_size)).all()
+    lastid = request.args.get('lastid', 0)
+
+    items = DungeonsFirstAdventure.query.filter(DungeonsFirstAdventure.id>int(lastid)).\
+        order_by(DungeonsFirstAdventure.id.desc()).offset(int(page)*int(page_size)).limit(int(page_size)).all()
     
     return jsonify([i.serialize for i in items])
