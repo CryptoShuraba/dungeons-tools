@@ -12,7 +12,7 @@ class MonsterList(db.Model):
     profession = db.Column(db.String(50), default='')
     monster = db.Column(db.String(50), default='')
     prefix = db.Column(db.String(50), default='')
-    token_uri = db.Column(db.String(2000), default='')
+    token_uri = db.Column(db.String(5000), default='')
     
     health_point = db.Column(db.Integer)
     physical_damage_point = db.Column(db.Integer)

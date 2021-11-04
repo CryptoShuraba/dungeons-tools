@@ -3,6 +3,7 @@ from web3 import Web3
 import traceback
 import os
 from flaskr import db
+from datetime import datetime
 
 from flaskr.monster.models import MonsterList
 
@@ -12,14 +13,15 @@ def put_monster(tokenid, suffix, profession, monster, prefix, token_uri,
         physical_defence, magical_defence, dodge, hit, critical, parry):
     obj = MonsterList.query.filter_by(token_id=tokenid).first()
     if not obj:
+        now = datetime.now()
         obj = MonsterList(token_id=tokenid, suffix=suffix, profession=profession, monster=monster,
             prefix=prefix, token_uri=token_uri, health_point=health_point, physical_damage_point=physical_damage_point,
             magical_damage_point=magical_damage_point, physical_defence=physical_defence, magical_defence=magical_defence,
-            dodge=dodge, hit=hit, critical=critical, parry=parry)
+            dodge=dodge, hit=hit, critical=critical, parry=parry, created=now, updated=now)
         db.session.add(obj)
     db.session.commit()
 
-@scheduler.task('interval', id='do_job_2', minutes=10)
+@scheduler.task('interval', id='do_job_2', hours=8)
 def monsters():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
@@ -51,6 +53,8 @@ def monsters():
                 hit = monsterContract.functions.hit(tokenID).call()
                 critical = monsterContract.functions.critical(tokenID).call()
                 parry = monsterContract.functions.parry(tokenID).call()
+
+                print(tokenID, monster)
 
                 put_monster(tokenID, suffix, profession, monster, prefix, tokenURI, 
                     healthPoint, physicalDamagePoint, magicalDamagePoint, 

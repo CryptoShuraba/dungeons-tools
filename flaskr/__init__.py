@@ -41,8 +41,10 @@ def create_app(test_config=None):
         from .schedule import dungeons, monster
         scheduler.start()
 
-        from .dungeons import views
-        app.register_blueprint(views.bp)
+        from .dungeons import views as v1
+        from .monster import views as v2
+        app.register_blueprint(v1.bp)
+        app.register_blueprint(v2.bp)
     
     CORS(app)
     return app
