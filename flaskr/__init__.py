@@ -12,7 +12,8 @@ migrate = Migrate(compare_type=True)
 scheduler = APScheduler()
 
 def create_app(test_config=None):
-    from .models import DungeonsFirstAdventure, DungeonsSummonerStat, DungeonsMonsterCoppers
+    from .dungeons.models import DungeonsFirstAdventure, DungeonsSummonerStat, DungeonsMonsterCoppers
+    from .monster.models import MonsterList
 
     def is_debug_mode():
         """Get app debug status."""
@@ -37,11 +38,11 @@ def create_app(test_config=None):
     scheduler.init_app(app)
 
     with app.app_context():
-        from . import jobs
+        from .schedule import dungeons, monster
         scheduler.start()
 
-        from . import dungeons
-        app.register_blueprint(dungeons.bp)
+        from .dungeons import views
+        app.register_blueprint(views.bp)
     
     CORS(app)
     return app

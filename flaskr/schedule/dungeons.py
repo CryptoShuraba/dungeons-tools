@@ -1,4 +1,4 @@
-from . import scheduler
+from flaskr import scheduler
 from web3 import Web3
 import traceback
 import requests
@@ -6,7 +6,8 @@ import json
 import os
 from datetime import datetime
 
-from flaskr import models, db
+from flaskr import db
+from flaskr.dungeons import models
 
 
 monkFirstAdventure = None
