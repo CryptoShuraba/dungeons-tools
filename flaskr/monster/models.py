@@ -36,5 +36,14 @@ class MonsterList(db.Model):
             'monster': self.monster,
             'prefix': self.prefix,
             'profession': self.profession,
-            'token_uri': self.token_uri
+            'token_uri': self.token_uri,
+            'health_point': self.health_point,
+            'physical_damage_point': self.physical_damage_point,
+            'magical_damage_point': self.magical_damage_point,
+            'physical_defence': self.physical_defence,
+            'magical_defence': self.magical_defence,
+            'dodge': self.dodge,
+            'hit': self.hit,
+            'critical': self.critical,
+            'parry': self.parry
         }
