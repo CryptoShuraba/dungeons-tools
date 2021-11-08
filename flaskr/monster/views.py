@@ -16,7 +16,7 @@ def monster_list():
     page = request.args.get('page', 0)
 
     items = MonsterList.query.\
-        join(DungeonsMonsterCoppers, MonsterList.token_id==DungeonsMonsterCoppers.monster_tokenid).\
+        join(DungeonsMonsterCoppers, MonsterList.token_id==DungeonsMonsterCoppers.monster_tokenid, isouter=True).\
         order_by(MonsterList.id.desc()).offset(int(page)*int(page_size)).limit(int(page_size)).all()
     
     return jsonify([i.serialize for i in items])
