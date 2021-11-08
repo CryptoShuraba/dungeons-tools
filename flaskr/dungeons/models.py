@@ -104,7 +104,7 @@ class DungeonsMonsterCoppers(db.Model):
     __tablename__ = 'dungeons_monster_coppers'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    monster_tokenid = db.Column(db.BigInteger, unique=True)
+    monster_tokenid = db.Column(db.BigInteger, db.ForeignKey('monster_list.token_id'), unique=True)
     monster = db.Column(db.String(50), default='')
     prefix = db.Column(db.String(50), default='')
     suffix = db.Column(db.Integer)

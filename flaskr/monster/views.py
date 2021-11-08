@@ -5,6 +5,7 @@ from flask import (
 )
 
 from .models import MonsterList
+from flaskr.dungeons.models import DungeonsMonsterCoppers
 
 bp = Blueprint('monsters', __name__, url_prefix='/monsters')
 
@@ -15,6 +16,7 @@ def monster_list():
     page = request.args.get('page', 0)
 
     items = MonsterList.query.\
+        join(DungeonsMonsterCoppers, MonsterList.token_id==DungeonsMonsterCoppers.monster_tokenid).\
         order_by(MonsterList.id.desc()).offset(int(page)*int(page_size)).limit(int(page_size)).all()
     
     return jsonify([i.serialize for i in items])

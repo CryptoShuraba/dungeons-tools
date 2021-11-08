@@ -25,6 +25,7 @@ class MonsterList(db.Model):
     parry = db.Column(db.Integer)
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
+    dungeonsMonsterCoppers = db.relationship('DungeonsMonsterCoppers', uselist=False, backref="monsterlist")
     
     def __repr__(self):
         return '<id {}>'.format(self.id)
@@ -36,7 +37,7 @@ class MonsterList(db.Model):
             'monster': self.monster,
             'prefix': self.prefix,
             'profession': self.profession,
-            'token_uri': self.token_uri,
+            # 'token_uri': self.token_uri,
             'health_point': self.health_point,
             'physical_damage_point': self.physical_damage_point,
             'magical_damage_point': self.magical_damage_point,
@@ -45,5 +46,6 @@ class MonsterList(db.Model):
             'dodge': self.dodge,
             'hit': self.hit,
             'critical': self.critical,
-            'parry': self.parry
+            'parry': self.parry,
+            'copper_coins': self.dungeonsMonsterCoppers.copper_coins if self.dungeonsMonsterCoppers else 0
         }
