@@ -38,7 +38,7 @@ def create_app(test_config=None):
     scheduler.init_app(app)
 
     with app.app_context():
-        from .schedule import dungeons, monster
+        from .schedule import dungeons, monster, track_monsternft_tx
         scheduler.start()
 
         from .dungeons import views as v1
