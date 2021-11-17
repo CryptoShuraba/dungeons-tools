@@ -4,7 +4,7 @@ from flask import (
     Blueprint, jsonify
 )
 
-from .models import MonsterList
+from .models import MonsterList, MonsterNFTHolder
 from flaskr.dungeons.models import DungeonsMonsterCoppers
 
 bp = Blueprint('monsters', __name__, url_prefix='/monsters')
@@ -29,3 +29,13 @@ def get_monster():
     obj = MonsterList.query.filter_by(token_id=tokenid).first()
     
     return jsonify(obj.serialize)
+
+
+@bp.route('/get_mine_monster', methods=["GET"])
+def get_mine_monster():
+    address = request.args.get('address', '')
+
+    items = MonsterNFTHolder.query.filter_by(holder_address=address.lower()).all()
+    
+    return jsonify([i.serialize for i in items])
+

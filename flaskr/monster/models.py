@@ -37,7 +37,6 @@ class MonsterList(db.Model):
             'monster': self.monster,
             'prefix': self.prefix,
             'profession': self.profession,
-            # 'token_uri': self.token_uri,
             'health_point': self.health_point,
             'physical_damage_point': self.physical_damage_point,
             'magical_damage_point': self.magical_damage_point,
@@ -90,3 +89,9 @@ class MonsterNFTHolder(db.Model):
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
+
+    @property
+    def serialize(self):
+        return {
+            'token_id': self.token_id,
+        }
