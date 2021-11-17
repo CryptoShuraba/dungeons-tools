@@ -47,46 +47,47 @@ def update_monster_nft_holder(tokenId, holder):
 
 @scheduler.task('interval', id='do_job_3', minutes=2)
 def track_monsternft_contract_tx():
-    blockNumber = get_track_blocknum()
-    print("track_monsternft_contract_tx Start Block: {}".format(blockNumber))
+    with scheduler.app.app_context():
+        blockNumber = get_track_blocknum()
+        print("track_monsternft_contract_tx Start Block: {}".format(blockNumber))
 
-    url = ftmapi.format(module, action, address, blockNumber, apikey)
-    res = requests.get(url)
-    results = json.loads(res.content)['result']
+        url = ftmapi.format(module, action, address, blockNumber, apikey)
+        res = requests.get(url)
+        results = json.loads(res.content)['result']
 
-    if len(results) == 0:
-        return
+        if len(results) == 0:
+            return
 
-    for r in results:
-        mnt = MonsterNFTTracker()
-        mnt.block_number = r['blockNumber']
-        mnt.time_stamp = r['timeStamp']
-        mnt.txhash = r['hash']
-        mnt.nonce = r['nonce']
-        mnt.block_hash = r['blockHash']
-        mnt.from_address = r['from']
-        mnt.contract_address = r['contractAddress']
-        mnt.to_address = r['to']
-        mnt.token_id = r['tokenID']
-        mnt.token_name = r['tokenName']
-        mnt.token_symbol = r['tokenSymbol']
-        mnt.transaction_index = r['transactionIndex']
-        mnt.confirmations = r['confirmations']
-        now = datetime.now()
-        mnt.updated = now
-        mnt.created = now
+        for r in results:
+            mnt = MonsterNFTTracker()
+            mnt.block_number = r['blockNumber']
+            mnt.time_stamp = r['timeStamp']
+            mnt.txhash = r['hash']
+            mnt.nonce = r['nonce']
+            mnt.block_hash = r['blockHash']
+            mnt.from_address = r['from']
+            mnt.contract_address = r['contractAddress']
+            mnt.to_address = r['to']
+            mnt.token_id = r['tokenID']
+            mnt.token_name = r['tokenName']
+            mnt.token_symbol = r['tokenSymbol']
+            mnt.transaction_index = r['transactionIndex']
+            mnt.confirmations = r['confirmations']
+            now = datetime.now()
+            mnt.updated = now
+            mnt.created = now
 
-        # insert to table MonsterNFTTracker
-        obj = MonsterNFTTracker.query.filter_by(txhash=r['hash']).first()
-        if obj:
-            continue
+            # insert to table MonsterNFTTracker
+            obj = MonsterNFTTracker.query.filter_by(txhash=r['hash']).first()
+            if obj:
+                continue
 
-        db.session.add(mnt)
-        # update table monster_nft_holder if transfer
-        update_monster_nft_holder(mnt.token_id, mnt.to_address)
-        db.session.commit()
+            db.session.add(mnt)
+            # update table monster_nft_holder if transfer
+            update_monster_nft_holder(mnt.token_id, mnt.to_address)
+            db.session.commit()
 
-    print("track_monsternft_contract_tx End Block: {}".format(mnt.block_number))
-    put_track_blocknum(mnt.block_number)
+        print("track_monsternft_contract_tx End Block: {}".format(mnt.block_number))
+        put_track_blocknum(mnt.block_number)
 
-    return 'ok'
+        return 'ok'
