@@ -12,7 +12,7 @@ migrate = Migrate(compare_type=True)
 scheduler = APScheduler()
 
 def create_app(test_config=None):
-    from .monster.models import MonsterList
+    from .monster.models import MonsterList, MonsterNFTTracker, MonsterNFTHolder
     from .dungeons.models import DungeonsFirstAdventure, DungeonsSummonerStat, DungeonsMonsterCoppers
 
     def is_debug_mode():
