@@ -43,6 +43,10 @@ def get_mine_monster():
 
 @bp.route('/get_the_first_airdrop_array', methods=["GET"])
 def get_the_first_airdrop_array():
+    base = request.args.get('page', 200)
+
     items = services.get_the_first_airdrop_array()
     
-    return json.dumps([{'index': i+1, 'address': e.holder_address, 'count': e.count} for i, e in enumerate(items)])
+    return json.dumps([{
+        'index': i+1, 'address': e.holder_address, 'count': e.count, 
+        'amount': services.cal_rewards(e.count, int(base))} for i, e in enumerate(items)])
