@@ -1,11 +1,10 @@
 import traceback
 from flaskr import scheduler
-from web3 import Web3
 import os
 from flaskr import db
 from datetime import datetime
 
-from flaskr.monster.models import MonsterList, MonsterNFTTracker, MonsterNFTHolder
+from flaskr.rarity.models import RarityNFTTracker, RarityNFTHolder
 from flaskr.dungeons.models import DungeonsTrack
 import requests
 import json
@@ -13,10 +12,10 @@ import json
 
 module = 'account'
 action = 'tokennfttx'
-address = '0x2D2f7462197d4cfEB6491e254a16D3fb2d2030EE'
+address = '0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb'
 apikey = os.getenv('FTM_APIKEY')
 ftmapi = 'https://api.ftmscan.com/api?module={}&action={}&contractaddress={}&startblock={}&sort=asc&apikey={}'
-trackKey = '30EE-last-block'
+trackKey = 'rarity-transfer-events-last-block'
 
 
 def get_track_blocknum():
@@ -35,22 +34,23 @@ def put_track_blocknum(blocknum):
     obj.updated = datetime.now()
     db.session.commit()
 
-def update_monster_nft_holder(tokenId, holder):
-    obj = MonsterNFTHolder.query.filter_by(token_id=tokenId).first()
+def update_nft_holder(tokenId, holder):
+    obj = RarityNFTHolder.query.filter_by(token_id=tokenId).first()
     now = datetime.now()
     if not obj:
-        obj = MonsterNFTHolder(token_id=tokenId, holder_address=holder, created=now, updated=now)
+        obj = RarityNFTHolder(token_id=tokenId, holder_address=holder, created=now, updated=now)
         db.session.add(obj)
     elif obj.holder_address != holder:
         obj.holder_address = holder
         obj.updated = now
 
 
-@scheduler.task('interval', id='do_job_3', minutes=2)
-def track_monsternft_contract_tx():
+# ERC721 - Track Token Transfer Events
+@scheduler.task('interval', id='do_job_4', minutes=2)
+def track_raritynft_contract_tx():
     with scheduler.app.app_context():
         blockNumber = get_track_blocknum()
-        print("track_monsternft_contract_tx Start Block: {}".format(blockNumber))
+        print("track_raritynft_contract_tx Start Block: {}".format(blockNumber))
 
         url = ftmapi.format(module, action, address, blockNumber, apikey)
         res = requests.get(url)
@@ -61,7 +61,7 @@ def track_monsternft_contract_tx():
 
         for r in results:
             try:
-                mnt = MonsterNFTTracker()
+                mnt = RarityNFTTracker()
                 mnt.block_number = r['blockNumber']
                 mnt.time_stamp = r['timeStamp']
                 mnt.txhash = r['hash']
@@ -79,14 +79,14 @@ def track_monsternft_contract_tx():
                 mnt.updated = now
                 mnt.created = now
 
-                # insert to table MonsterNFTTracker
-                obj = MonsterNFTTracker.query.filter_by(txhash=r['hash']).first()
+                # insert to table RarityNFTTracker
+                obj = RarityNFTTracker.query.filter_by(txhash=r['hash']).first()
                 if obj:
                     continue
 
                 db.session.add(mnt)
-                # update table monster_nft_holder if transfer
-                update_monster_nft_holder(mnt.token_id, mnt.to_address)
+                # update table rarity_nft_holder if transfer
+                update_nft_holder(mnt.token_id, mnt.to_address)
                 db.session.commit()
 
                 blockNumber = mnt.block_number
@@ -95,7 +95,7 @@ def track_monsternft_contract_tx():
                 traceback.print_exc()
                 break
 
-        print("track_monsternft_contract_tx End Block: {}".format(blockNumber))
+        print("track_raritynft_contract_tx End Block: {}".format(blockNumber))
         put_track_blocknum(blockNumber)
 
         return 'ok'
