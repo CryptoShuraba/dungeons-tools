@@ -6,6 +6,8 @@ from flask import (
 
 from .models import MonsterList, MonsterNFTHolder
 from flaskr.dungeons.models import DungeonsMonsterCoppers
+from . import services
+import json
 
 bp = Blueprint('monsters', __name__, url_prefix='/monsters')
 
@@ -39,3 +41,8 @@ def get_mine_monster():
     
     return jsonify([i.serialize for i in items])
 
+@bp.route('/get_the_first_airdrop_array', methods=["GET"])
+def get_the_first_airdrop_array():
+    items = services.get_the_first_airdrop_array()
+    
+    return json.dumps([{'index': i+1, 'address': e.holder_address, 'count': e.count} for i, e in enumerate(items)])
