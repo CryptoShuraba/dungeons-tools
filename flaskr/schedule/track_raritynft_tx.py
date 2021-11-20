@@ -46,7 +46,7 @@ def update_nft_holder(tokenId, holder):
 
 
 # ERC721 - Track Token Transfer Events
-@scheduler.task('interval', id='do_job_4', minutes=2)
+@scheduler.task('cron', id='do_job_4', hour=11, minute=20)
 def track_raritynft_contract_tx():
     with scheduler.app.app_context():
         blockNumber = get_track_blocknum()
@@ -86,6 +86,7 @@ def track_raritynft_contract_tx():
 
                 db.session.add(mnt)
                 # update table rarity_nft_holder if transfer
+                # print("the #{} belongs to {}".format(mnt.token_id, mnt.to_address))
                 update_nft_holder(mnt.token_id, mnt.to_address)
                 db.session.commit()
 
