@@ -14,6 +14,7 @@ scheduler = APScheduler()
 def create_app(test_config=None):
     from .monster.models import MonsterList, MonsterNFTTracker, MonsterNFTHolder
     from .dungeons.models import DungeonsFirstAdventure, DungeonsSummonerStat, DungeonsMonsterCoppers
+    from .rarity.models import RarityNFTHolder, RarityNFTTracker
 
     def is_debug_mode():
         """Get app debug status."""

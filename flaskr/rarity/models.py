@@ -34,7 +34,7 @@ class RarityNFTHolder(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
     holder_address = db.Column(db.String(100))
-    token_id = db.Column(db.Integer, db.ForeignKey('monster_list.token_id'), unique=True)
+    token_id = db.Column(db.Integer, unique=True)
 
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
