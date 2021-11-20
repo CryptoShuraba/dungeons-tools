@@ -61,11 +61,14 @@ def put_track_blocknum(blocknum):
     obj.updated = datetime.now()
     db.session.commit()
 
-def insert_adventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win):
+def insert_adventure(calledFrom, txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win):
     obj = models.DungeonsFirstAdventure.query.filter_by(txhash=txhash).first()
     if not obj:
-        obj = models.DungeonsFirstAdventure(txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win, datetime.now(), datetime.now())
+        obj = models.DungeonsFirstAdventure(calledFrom, txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win, datetime.now(), datetime.now())
         db.session.add(obj)
+        db.session.commit()
+    elif not obj.called_from:
+        obj.called_from = calledFrom
         db.session.commit()
 
 def put_monster_coppers(monsterTokenid):
@@ -117,14 +120,14 @@ def stat_summoner_adventure():
         method = '0xb00b52f1'
 
         blockNumber = get_track_blocknum()
-        print("Start Block: {}".format(blockNumber))
+        print("track-first-adventure Start Block: {}".format(blockNumber))
         newBlockNumeber = blockNumber
 
         page = 0
         while True:
             try:
                 page += 1
-                print("Current Page: {}".format(page))
+                # print("Current Page: {}".format(page))
                 res = requests.get(ftmapi.format(blockNumber, page))
                 results = json.loads(res.content)['result']
                 if len(results) == 0:
@@ -138,12 +141,12 @@ def stat_summoner_adventure():
                         # Count wins and plays
                         winsCount, playCount = count_wins(summonerTokenID)
                         # add to table
-                        print(r['blockNumber'], summonerTokenID, copperCoins, winsCount, playCount)
+                        # print(r['blockNumber'], summonerTokenID, copperCoins, winsCount, playCount)
                         put_summoner_stat(summonerTokenID, copperCoins, winsCount, playCount)
 
                         monsterTokenID, copper, isWin =  get_result(summonerTokenID, playCount)
                         copper = copper/1e18
-                        insert_adventure(r['hash'], r['blockNumber'], summonerTokenID, monsterTokenID, 6, copper, isWin)
+                        insert_adventure(r['from'], r['hash'], r['blockNumber'], summonerTokenID, monsterTokenID, 6, copper, isWin)
 
                         # get monster coppers
                         put_monster_coppers(monsterTokenID)
@@ -154,6 +157,6 @@ def stat_summoner_adventure():
                 traceback.print_exc()
                 break
 
-        print("End Block: {}".format(newBlockNumeber))
+        print("track-first-adventure End Block: {}".format(newBlockNumeber))
         put_track_blocknum(newBlockNumeber)
         return 'ok'

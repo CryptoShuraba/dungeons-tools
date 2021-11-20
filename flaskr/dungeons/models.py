@@ -5,6 +5,7 @@ class DungeonsFirstAdventure(db.Model):
     __tablename__ = 'dungeons_first_adventure'
 
     id = db.Column(db.BigInteger, primary_key=True)
+    called_from = db.Column(db.String(200), default='')
     txhash = db.Column(db.String(200), unique=True)
     blocknum = db.Column(db.String(200))
     summoner_tokenid = db.Column(db.BigInteger)
@@ -15,7 +16,8 @@ class DungeonsFirstAdventure(db.Model):
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
 
-    def __init__(self, txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win, created, updated):
+    def __init__(self, called_from, txhash, blocknum, summoner_tokenid, monster_tokenid, summoner_class, copper_coins, is_summoner_win, created, updated):
+        self.called_from = called_from
         self.txhash = txhash
         self.blocknum = blocknum
         self.summoner_tokenid = summoner_tokenid
