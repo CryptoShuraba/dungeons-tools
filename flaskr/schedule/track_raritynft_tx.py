@@ -14,25 +14,26 @@ module = 'account'
 action = 'tokennfttx'
 address = '0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb'
 apikey = os.getenv('FTM_APIKEY')
-ftmapi = 'https://api.ftmscan.com/api?module={}&action={}&contractaddress={}&startblock={}&sort=asc&apikey={}'
-trackKey = 'rarity-transfer-events-last-block'
+# track 1000 items per page
+# avoid to use startblock and endblock as parmas to retrieve, will leads to timeout 
+ftmapi = 'https://api.ftmscan.com/api?module={}&action={}&contractaddress={}&page={}&offset=1000&sort=asc&apikey={}'
+trackKey = 'rarity-transfer-events-last-page'
 
 
-def get_track_blocknum():
+def get_track_pagenum():
     obj = DungeonsTrack.query.filter_by(key=trackKey).first()
     if not obj:
-        obj = DungeonsTrack(key=trackKey, value='0', created=datetime.now(), updated=datetime.now())
+        obj = DungeonsTrack(key=trackKey, value='1', created=datetime.now(), updated=datetime.now())
         db.session.add(obj)
         db.session.commit()
-        return '0'
+        return '1'
     return obj.value
 
 
-def put_track_blocknum(blocknum):
+def put_track_blocknum(pageNum):
     obj = DungeonsTrack.query.filter_by(key=trackKey).first()
-    obj.value = blocknum
+    obj.value = pageNum
     obj.updated = datetime.now()
-    db.session.commit()
 
 def update_nft_holder(tokenId, holder):
     obj = RarityNFTHolder.query.filter_by(token_id=tokenId).first()
@@ -46,18 +47,17 @@ def update_nft_holder(tokenId, holder):
 
 
 # ERC721 - Track Token Transfer Events
-@scheduler.task('cron', id='do_job_4', hour=11, minute=36)
+@scheduler.task('cron', id='do_job_4', hour=7, minute=16)
 def track_raritynft_contract_tx():
     with scheduler.app.app_context():
+        pageNumber = get_track_pagenum()
+        print("track_raritynft_contract_tx Start page: {}".format(pageNumber))
         while True:
-            blockNumber = get_track_blocknum()
-            print("track_raritynft_contract_tx Start Block: {}".format(blockNumber))
-
-            url = ftmapi.format(module, action, address, blockNumber, apikey)
+            url = ftmapi.format(module, action, address, pageNumber, apikey)
             res = requests.get(url)
             results = json.loads(res.content)['result']
 
-            if len(results) == 0:
+            if not results or len(results) == 0:
                 break
 
             for r in results:
@@ -89,7 +89,6 @@ def track_raritynft_contract_tx():
                     # update table rarity_nft_holder if transfer
                     # print("the #{} belongs to {}".format(mnt.token_id, mnt.to_address))
                     update_nft_holder(mnt.token_id, mnt.to_address)
-                    db.session.commit()
 
                     blockNumber = mnt.block_number
                 except:
@@ -97,7 +96,9 @@ def track_raritynft_contract_tx():
                     traceback.print_exc()
                     break
 
-            print("track_raritynft_contract_tx End Block: {}".format(blockNumber))
-            put_track_blocknum(blockNumber)
+            print("track_raritynft_contract_tx End page: {}".format(pageNumber))
+            put_track_blocknum(pageNumber)
+            db.session.commit()
+            pageNumber += 1
 
         return 'ok'
