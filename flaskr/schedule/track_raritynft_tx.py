@@ -47,58 +47,51 @@ def update_nft_holder(tokenId, holder):
 
 
 # ERC721 - Track Token Transfer Events
-@scheduler.task('cron', id='do_job_4', hour=7, minute=16)
+@scheduler.task('cron', id='do_job_4', hour=7, minute=32)
 def track_raritynft_contract_tx():
     with scheduler.app.app_context():
         pageNumber = get_track_pagenum()
         print("track_raritynft_contract_tx Start page: {}".format(pageNumber))
         while True:
             url = ftmapi.format(module, action, address, pageNumber, apikey)
-            res = requests.get(url)
+            res = requests.get(url, timeout=10)
             results = json.loads(res.content)['result']
 
             if not results or len(results) == 0:
                 break
 
             for r in results:
-                try:
-                    mnt = RarityNFTTracker()
-                    mnt.block_number = r['blockNumber']
-                    mnt.time_stamp = r['timeStamp']
-                    mnt.txhash = r['hash']
-                    mnt.nonce = r['nonce']
-                    mnt.block_hash = r['blockHash']
-                    mnt.from_address = r['from']
-                    mnt.contract_address = r['contractAddress']
-                    mnt.to_address = r['to']
-                    mnt.token_id = r['tokenID']
-                    mnt.token_name = r['tokenName']
-                    mnt.token_symbol = r['tokenSymbol']
-                    mnt.transaction_index = r['transactionIndex']
-                    mnt.confirmations = r['confirmations']
-                    now = datetime.now()
-                    mnt.updated = now
-                    mnt.created = now
+                mnt = RarityNFTTracker()
+                mnt.block_number = r['blockNumber']
+                mnt.time_stamp = r['timeStamp']
+                mnt.txhash = r['hash']
+                mnt.nonce = r['nonce']
+                mnt.block_hash = r['blockHash']
+                mnt.from_address = r['from']
+                mnt.contract_address = r['contractAddress']
+                mnt.to_address = r['to']
+                mnt.token_id = r['tokenID']
+                mnt.token_name = r['tokenName']
+                mnt.token_symbol = r['tokenSymbol']
+                mnt.transaction_index = r['transactionIndex']
+                mnt.confirmations = r['confirmations']
+                now = datetime.now()
+                mnt.updated = now
+                mnt.created = now
 
-                    # insert to table RarityNFTTracker
-                    obj = RarityNFTTracker.query.filter_by(txhash=r['hash']).first()
-                    if obj:
-                        continue
+                # insert to table RarityNFTTracker
+                obj = RarityNFTTracker.query.filter_by(txhash=r['hash']).first()
+                if obj:
+                    continue
 
-                    db.session.add(mnt)
-                    # update table rarity_nft_holder if transfer
-                    # print("the #{} belongs to {}".format(mnt.token_id, mnt.to_address))
-                    update_nft_holder(mnt.token_id, mnt.to_address)
-
-                    blockNumber = mnt.block_number
-                except:
-                    put_track_blocknum(blockNumber)
-                    traceback.print_exc()
-                    break
+                db.session.add(mnt)
+                # update table rarity_nft_holder if transfer
+                # print("the #{} belongs to {}".format(mnt.token_id, mnt.to_address))
+                update_nft_holder(mnt.token_id, mnt.to_address)
 
             print("track_raritynft_contract_tx End page: {}".format(pageNumber))
             put_track_blocknum(pageNumber)
             db.session.commit()
-            pageNumber += 1
+            pageNumber = str(int(pageNumber) + 1)
 
         return 'ok'
