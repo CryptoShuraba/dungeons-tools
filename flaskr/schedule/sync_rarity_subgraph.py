@@ -10,7 +10,7 @@ import requests
 import json
 
 
-url = 'url = "https://api.thegraph.com/subgraphs/name/rarity-adventure/rarity"'
+url = "https://api.thegraph.com/subgraphs/name/rarity-adventure/rarity"
 payload = '''
             {
                 summoners(first:1000, where:{id_gt: %s}) {
