@@ -47,7 +47,7 @@ def update_nft_holder(tokenId, holder):
 
 
 # ERC721 - Track Token Transfer Events
-@scheduler.task('cron', id='do_job_4', hour=7, minute=32)
+# @scheduler.task('cron', id='do_job_4', hour=7, minute=32)
 def track_raritynft_contract_tx():
     with scheduler.app.app_context():
         pageNumber = get_track_pagenum()

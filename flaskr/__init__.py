@@ -39,7 +39,7 @@ def create_app(test_config=None):
     scheduler.init_app(app)
 
     with app.app_context():
-        from .schedule import dungeons, monster, track_monsternft_tx, track_raritynft_tx
+        from .schedule import dungeons, monster, track_monsternft_tx, sync_rarity_subgraph
         scheduler.start()
 
         from .dungeons import views as v1
