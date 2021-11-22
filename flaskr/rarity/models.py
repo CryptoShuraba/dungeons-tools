@@ -35,8 +35,8 @@ class RarityNFTHolder(db.Model):
 
     holder_address = db.Column(db.String(100))
     token_id = db.Column(db.Integer, unique=True)
-    summoner_class = db.Column(db.String(10), defult='')
-    summoner_level = db.Column(db.String(10), defult='')
+    summoner_class = db.Column(db.String(10))
+    summoner_level = db.Column(db.String(10))
 
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
