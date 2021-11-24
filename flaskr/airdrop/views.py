@@ -12,6 +12,7 @@ bp = Blueprint('airdrop', __name__, url_prefix='/airdrop')
 @bp.route('/monster_holder', methods=["GET"])
 def monster_holder():
     base = request.args.get('page', 200)
+    # endblock = request.args.get('endblock', '')
 
     items = services.get_monster_holders()
     

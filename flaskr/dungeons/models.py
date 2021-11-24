@@ -7,7 +7,7 @@ class DungeonsFirstAdventure(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     called_from = db.Column(db.String(200), default='')
     txhash = db.Column(db.String(200), unique=True)
-    blocknum = db.Column(db.String(200))
+    blocknum = db.Column(db.BigInteger, default=0)
     summoner_tokenid = db.Column(db.BigInteger)
     monster_tokenid = db.Column(db.BigInteger)
     summoner_class = db.Column(db.Integer)

@@ -55,7 +55,7 @@ class MonsterNFTTracker(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
 
-    block_number = db.Column(db.String(50))
+    block_number = db.Column(db.BigInteger, default=0)
     time_stamp = db.Column(db.String(50))
     txhash = db.Column(db.String(100), unique=True)
     nonce = db.Column(db.String(50))
@@ -83,7 +83,7 @@ class MonsterNFTHolder(db.Model):
 
     holder_address = db.Column(db.String(100))
     token_id = db.Column(db.Integer, db.ForeignKey('monster_list.token_id'), unique=True)
-    block_number = db.Column(db.String(50))
+    block_number = db.Column(db.BigInteger, default=0)
 
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
