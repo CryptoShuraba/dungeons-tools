@@ -44,8 +44,10 @@ def create_app(test_config=None):
 
         from .dungeons import views as v1
         from .monster import views as v2
+        from .airdrop import views as v3
         app.register_blueprint(v1.bp)
         app.register_blueprint(v2.bp)
+        app.register_blueprint(v3.bp)
     
     CORS(app)
     return app
