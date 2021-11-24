@@ -33,13 +33,13 @@ def cal_dungeons_interaction_rewards(num, base):
     return rewards
 
 
-def get_monster_holders():
+def get_monster_holders(endblock):
     return db.session.query(
         MonsterNFTHolder.holder_address, db.func.count().label('count')
-    ).group_by(MonsterNFTHolder.holder_address).order_by(desc('count')).all()
+    ).filter(MonsterNFTHolder.block_number<=endblock).group_by(MonsterNFTHolder.holder_address).order_by(desc('count')).all()
 
 
-def get_dungeons_interactions():
+def get_dungeons_interactions(endblock):
     return db.session.query(
         DungeonsFirstAdventure.called_from, db.func.count().label('count')
-    ).group_by(DungeonsFirstAdventure.called_from).order_by(desc('count')).all()
+    ).filter(DungeonsFirstAdventure.blocknum<=endblock).group_by(DungeonsFirstAdventure.called_from).order_by(desc('count')).all()

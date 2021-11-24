@@ -11,10 +11,10 @@ bp = Blueprint('airdrop', __name__, url_prefix='/airdrop')
 
 @bp.route('/monster_holder', methods=["GET"])
 def monster_holder():
-    base = request.args.get('page', 200)
-    # endblock = request.args.get('endblock', '')
+    base = request.args.get('base', 200)
+    endblock = request.args.get('endblock', 0)
 
-    items = services.get_monster_holders()
+    items = services.get_monster_holders(int(endblock))
     
     return json.dumps([{
         'index': i+1, 'address': e.holder_address, 'count': e.count, 
@@ -22,9 +22,10 @@ def monster_holder():
 
 @bp.route('/dungeons_interaction', methods=["GET"])
 def dungeons_interaction():
-    base = request.args.get('page', 50)
+    base = request.args.get('base', 50)
+    endblock = request.args.get('endblock', 0)
 
-    items = services.get_dungeons_interactions()
+    items = services.get_dungeons_interactions(endblock)
     
     return json.dumps([{
         'index': i+1, 'address': e.called_from, 'count': e.count, 
