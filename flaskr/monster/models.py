@@ -83,6 +83,7 @@ class MonsterNFTHolder(db.Model):
 
     holder_address = db.Column(db.String(100))
     token_id = db.Column(db.Integer, db.ForeignKey('monster_list.token_id'), unique=True)
+    block_number = db.Column(db.String(50))
 
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)

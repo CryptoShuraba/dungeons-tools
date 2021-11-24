@@ -36,6 +36,8 @@ def monsters():
         
         tokenID = 0 if not obj else obj.token_id
 
+        print("get_minted_monsters Start tokenID: {}".format(tokenID))
+
         while tokenID < lastTokenId:
             try:
                 tokenID += 1
@@ -63,4 +65,5 @@ def monsters():
                 traceback.print_exc()
                 break
 
+        print("get_minted_monsters Last tokenID: {}".format(lastTokenId))
         return 'ok'

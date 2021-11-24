@@ -35,14 +35,15 @@ def put_track_blocknum(blocknum):
     obj.updated = datetime.now()
     db.session.commit()
 
-def update_monster_nft_holder(tokenId, holder):
+def update_monster_nft_holder(tokenId, holder, blockNumber):
     obj = MonsterNFTHolder.query.filter_by(token_id=tokenId).first()
     now = datetime.now()
     if not obj:
-        obj = MonsterNFTHolder(token_id=tokenId, holder_address=holder, created=now, updated=now)
+        obj = MonsterNFTHolder(token_id=tokenId, holder_address=holder, created=now, updated=now, block_number = blockNumber)
         db.session.add(obj)
     elif obj.holder_address != holder:
         obj.holder_address = holder
+        obj.block_number = blockNumber
         obj.updated = now
 
 
@@ -86,7 +87,7 @@ def track_monsternft_contract_tx():
 
                 db.session.add(mnt)
                 # update table monster_nft_holder if transfer
-                update_monster_nft_holder(mnt.token_id, mnt.to_address)
+                update_monster_nft_holder(mnt.token_id, mnt.to_address, mnt.block_number)
                 db.session.commit()
 
                 blockNumber = mnt.block_number
