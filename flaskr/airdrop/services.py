@@ -25,10 +25,10 @@ def cal_dungeons_interaction_rewards(num, base):
     rewards = 0
     if num < 1:
         return    
-    if num > 5:
-        rewards += (num - 5) * base * 2
-        num = 5
-    rewards += num * base * 1
+    elif num > 5:
+        rewards = base * 2
+    else:
+        rewards = base
         
     return rewards
 

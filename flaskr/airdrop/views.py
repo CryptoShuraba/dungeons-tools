@@ -21,7 +21,7 @@ def monster_holder():
 
 @bp.route('/dungeons_interaction', methods=["GET"])
 def dungeons_interaction():
-    base = request.args.get('page', 200)
+    base = request.args.get('page', 50)
 
     items = services.get_dungeons_interactions()
     
