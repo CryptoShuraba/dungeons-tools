@@ -6,7 +6,6 @@ from flask import (
 
 from .models import MonsterList, MonsterNFTHolder
 from flaskr.dungeons.models import DungeonsMonsterCoppers
-from . import services
 import json
 
 bp = Blueprint('monsters', __name__, url_prefix='/monsters')

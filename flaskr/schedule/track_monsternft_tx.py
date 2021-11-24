@@ -46,7 +46,7 @@ def update_monster_nft_holder(tokenId, holder):
         obj.updated = now
 
 
-@scheduler.task('interval', id='do_job_3', minutes=2)
+@scheduler.task('interval', id='do_job_3', seconds=5)
 def track_monsternft_contract_tx():
     with scheduler.app.app_context():
         blockNumber = get_track_blocknum()
