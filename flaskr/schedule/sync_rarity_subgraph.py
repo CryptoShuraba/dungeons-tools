@@ -13,7 +13,7 @@ import json
 url = "https://api.thegraph.com/subgraphs/name/rarity-adventure/rarity"
 payload = '''
             {
-                summoners(first:1000, where:{id_gt: %s}) {
+                summoners(first:1000, where:{id_gt: "%s"}) {
                     id
                     owner
                     _class
@@ -58,7 +58,7 @@ def sync_rarity_subgraph():
             for r in results:
                 item = RarityNFTHolder()
                 item.holder_address = r['owner']
-                item.token_id = r['id']
+                item.token_id = int(r['id'], 16)
                 now = datetime.now()
                 item.updated = now
                 item.created = now
