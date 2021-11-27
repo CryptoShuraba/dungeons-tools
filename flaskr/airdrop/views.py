@@ -30,3 +30,14 @@ def dungeons_interaction():
     return json.dumps([{
         'index': i+1, 'address': e.called_from, 'count': e.count, 
         'amount': services.cal_dungeons_interaction_rewards(e.count, int(base))} for i, e in enumerate(items)])
+
+
+@bp.route('/rarity_holder', methods=["GET"])
+def rarity_holder():
+    base = request.args.get('base', 4)
+
+    items = services.get_rarity_holders()
+    
+    return json.dumps([{
+        'index': i+1, 'address': e.holder_address, 'max_level': e.max_level, 
+        'amount': services.cal_rarity_holder_rewards(e.max_level, int(base))} for i, e in enumerate(items)])
