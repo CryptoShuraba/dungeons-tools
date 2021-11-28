@@ -45,10 +45,10 @@ def get_mine_monster():
 @bp.route('/totalsupply', methods=["GET"])
 def totalsupply():
     
-    return 100,000,000
+    return '100,000,000'
 
 
 @bp.route('/circulating', methods=["GET"])
 def circulating():
     
-    return 1,000,000
+    return '1,000,000'
