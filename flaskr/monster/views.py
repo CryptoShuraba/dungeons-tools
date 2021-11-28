@@ -39,3 +39,16 @@ def get_mine_monster():
     items = MonsterNFTHolder.query.filter_by(holder_address=address.lower()).all()
     
     return jsonify([i.serialize for i in items])
+
+
+
+@bp.route('/totalsupply', methods=["GET"])
+def get_mine_monster():
+    
+    return 100,000,000
+
+
+@bp.route('/circulating', methods=["GET"])
+def get_mine_monster():
+    
+    return 1,000,000
