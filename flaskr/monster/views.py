@@ -43,12 +43,12 @@ def get_mine_monster():
 
 
 @bp.route('/totalsupply', methods=["GET"])
-def get_mine_monster():
+def totalsupply():
     
     return 100,000,000
 
 
 @bp.route('/circulating', methods=["GET"])
-def get_mine_monster():
+def circulating():
     
     return 1,000,000
