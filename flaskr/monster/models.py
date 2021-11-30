@@ -46,6 +46,7 @@ class MonsterList(db.Model):
             'hit': self.hit,
             'critical': self.critical,
             'parry': self.parry,
+            'token_uri': self.token_uri,
             'copper_coins': self.dungeonsMonsterCoppers.copper_coins if self.dungeonsMonsterCoppers else 0
         }
 
