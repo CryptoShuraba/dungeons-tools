@@ -36,7 +36,7 @@ def monsters():
         
         tokenID = 0 if not obj else obj.token_id
 
-        print("get_minted_monsters Start tokenID: {}".format(tokenID))
+        # print("get_minted_monsters Start tokenID: {}".format(tokenID))
 
         while tokenID < lastTokenId:
             try:
