@@ -84,6 +84,9 @@ def track_monsternft_contract_tx():
                 obj = MonsterNFTTracker.query.filter_by(txhash=r['hash']).first()
                 if obj:
                     continue
+                # check if Monster table syned the 
+                if not MonsterList.query.filter_by(token_id=mnt.token_id).first():
+                    continue
 
                 db.session.add(mnt)
                 # update table monster_nft_holder if transfer
