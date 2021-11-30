@@ -87,7 +87,7 @@ def put_monster_coppers(monsterTokenid):
             profession=profession, created=datetime.now(), updated=datetime.now())
         db.session.add(obj)
     elif copperCoins/1e18 != obj.copper_coins:
-        obj.copperCoins = copperCoins/1e18
+        obj.copper_coins = copperCoins/1e18
         obj.updated = datetime.now()
     else:
         return
