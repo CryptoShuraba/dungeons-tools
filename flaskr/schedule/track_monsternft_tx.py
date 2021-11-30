@@ -51,7 +51,7 @@ def update_monster_nft_holder(tokenId, holder, blockNumber):
 def track_monsternft_contract_tx():
     with scheduler.app.app_context():
         blockNumber = get_track_blocknum()
-        print("track_monsternft_contract_tx Start Block: {}".format(blockNumber))
+        # print("track_monsternft_contract_tx Start Block: {}".format(blockNumber))
 
         url = ftmapi.format(module, action, address, blockNumber, apikey)
         res = requests.get(url)
@@ -96,7 +96,7 @@ def track_monsternft_contract_tx():
                 traceback.print_exc()
                 break
 
-        print("track_monsternft_contract_tx End Block: {}".format(blockNumber))
+        # print("track_monsternft_contract_tx End Block: {}".format(blockNumber))
         put_track_blocknum(blockNumber)
 
         return 'ok'

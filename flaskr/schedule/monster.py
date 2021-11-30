@@ -56,7 +56,7 @@ def monsters():
                 critical = monsterContract.functions.critical(tokenID).call()
                 parry = monsterContract.functions.parry(tokenID).call()
 
-                print(tokenID, monster)
+                # print(tokenID, monster)
 
                 put_monster(tokenID, suffix, profession, monster, prefix, tokenURI, 
                     healthPoint, physicalDamagePoint, magicalDamagePoint, 
@@ -65,5 +65,5 @@ def monsters():
                 traceback.print_exc()
                 break
 
-        print("get_minted_monsters Last tokenID: {}".format(lastTokenId))
+        # print("get_minted_monsters Last tokenID: {}".format(lastTokenId))
         return 'ok'
