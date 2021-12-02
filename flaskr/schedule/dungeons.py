@@ -72,6 +72,8 @@ def insert_adventure(calledFrom, txhash, blocknum, summoner_tokenid, monster_tok
         db.session.commit()
 
 def put_monster_coppers(monsterTokenid):
+    if not monsterTokenid:
+        return
     copperCoins = copperBox.functions.balanceOfMonster(monsterTokenid).call()
     suffix = monsterContract.functions.suffix(monsterTokenid).call()
     prefix = monsterContract.functions.prefix(monsterTokenid).call()
@@ -94,7 +96,7 @@ def put_monster_coppers(monsterTokenid):
         
     db.session.commit()
 
-@scheduler.task('interval', id='do_job_1', hours=1)
+@scheduler.task('interval', id='do_job_1', minutes=10)
 def stat_summoner_adventure():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
