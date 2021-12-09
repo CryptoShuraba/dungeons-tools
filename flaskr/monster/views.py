@@ -51,4 +51,4 @@ def totalsupply():
 @bp.route('/circulating', methods=["GET"])
 def circulating():
     
-    return '1,000,000'
+    return '1,173,590.5'
