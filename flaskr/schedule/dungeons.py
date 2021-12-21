@@ -96,7 +96,7 @@ def put_monster_coppers(monsterTokenid):
         
     db.session.commit()
 
-@scheduler.task('interval', id='do_job_1', minutes=10)
+# @scheduler.task('interval', id='do_job_1', minutes=10)
 def stat_summoner_adventure():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))

@@ -21,7 +21,7 @@ def put_monster(tokenid, suffix, profession, monster, prefix, token_uri,
         db.session.add(obj)
     db.session.commit()
 
-@scheduler.task('interval', id='do_job_2', seconds=10)
+# @scheduler.task('interval', id='do_job_2', seconds=10)
 def monsters():
     with scheduler.app.app_context():
         w3 = Web3(Web3.HTTPProvider(os.getenv('ANKR_ENDPOINTS')))
